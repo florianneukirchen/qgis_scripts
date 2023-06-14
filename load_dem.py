@@ -117,7 +117,7 @@ def load_dem():
             iface.messageBar().pushWarning('DEM', 'You did not save the project, creating DRM.vrt in the current working directory ' + os.getcwd())
             url = 'DEM.vrt'
         else:
-            url =  + '_DEM.vrt'
+            url = url + '_DEM.vrt'
         myresult = processing.runAndLoadResults("gdal:buildvirtualraster", 
                         {'INPUT':demlayerlist,
                         'RESOLUTION':0,'SEPARATE':False,
