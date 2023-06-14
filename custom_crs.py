@@ -46,7 +46,9 @@ def crs_sat(lat=40, lon=0, h=5000000, azi=0, tilt=0, setproject=False, savecrs=F
     """
     Create a custom tilted perspective projection centered on lat, lon. 
     
-    This projections mimics the view of earth from a satellite in h meters altitude.
+    This projections mimics the view of earth from a satellite in h meters altitude. 
+    Nice for insets showing the area of interest. For best results, only use the upper 
+    part of the resulting "globe" and eventually also rotate the map view.
     Parameters:
         lat (float): Latitude (degrees)
         lon (float): Longitude (degrees)
