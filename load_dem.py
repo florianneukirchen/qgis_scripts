@@ -23,9 +23,10 @@ except NameError:
     from console.console import _console
     script_path = os.path.dirname(_console.console.tabEditorWidget.currentWidget().path)
 
+
+
 dem_grid = os.path.join(script_path, 'srtm_grid.gpkg')
     
-print(script_folder)
 print(dem_grid) 
 
 
