@@ -33,8 +33,13 @@ def crs_orthographic(lat, lon, setproject=False, savecrs=False):
     """
     proj4 = f'+proj=ortho +lat_0={lat} +lon_0={lon} +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs'
     description = f"Orthographic lat {lat}, lon {lon}"
+
     crs = QgsCoordinateReferenceSystem()
     crs.createFromProj4(proj4)
+    
+    if not crs.isValid():
+        raise ValueError('Invalid input values') 
+    
     if savecrs:
         save_crs(crs, description)
     if setproject:
@@ -65,8 +70,13 @@ def crs_sat(lat=40, lon=0, h=5000000, azi=0, tilt=0, setproject=False, savecrs=F
     # proj4 = f'+proj=nsper +lat_0={lat} +lon_0={lon} +h={h} +x_0=0 +y_0=0 +units=m'
     km = int(h/1000)
     description = f"Tilted Perspective lat {lat}, lon {lon}, h {km}k, azi {azi}, tilt {tilt}"
+
     crs = QgsCoordinateReferenceSystem()
     crs.createFromProj4(proj4)
+    
+    if not crs.isValid():
+        raise ValueError('Invalid input values') 
+        
     if savecrs:
         save_crs(crs, description)
     if setproject:
@@ -89,8 +99,13 @@ def crs_laea(lat, lon, setproject=False, savecrs=False):
     """
     proj4 = f'+proj=laea +lat_0={lat} +lon_0={lon} +x_0=4321000 +y_0=3210000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs'
     description = f"LAEA centered on lat {lat}, lon {lon}"
+    
     crs = QgsCoordinateReferenceSystem()
     crs.createFromProj4(proj4)
+    
+    if not crs.isValid():
+        raise ValueError('Invalid input values') 
+        
     if savecrs:
         save_crs(crs, description)
     if setproject:
@@ -119,8 +134,13 @@ def crs_pacific(projection='robin', lon=-150, setproject=False, savecrs=False):
     """
     proj4 = f'+proj={projection} +lon_0={lon} +x_0=0 +y_0=0 +datum=WGS84 +ellps=WGS84 +units=m +no_defs'
     description = f"Custom {projection} centered on lon {lon}"
+    
     crs = QgsCoordinateReferenceSystem()
     crs.createFromProj4(proj4)
+    
+    if not crs.isValid():
+        raise ValueError('Invalid input values') 
+        
     if not crs.isValid():
         #print("Invalid CRS")
         raise ValueError("Invalid CRS")
@@ -148,8 +168,13 @@ def crs_albers(lat_1, lat_2, lon_0=0, setproject=False, savecrs=False):
     """
     proj4 = f'+proj=aea +lon_0={lon_0} +lat_1={lat_1} +lat_2={lat_2} +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs'
     description = f"Albers w. parallels {lat_1}, {lat_2}, centered lon {lon_0}"
+    
     crs = QgsCoordinateReferenceSystem()
     crs.createFromProj4(proj4)
+    
+    if not crs.isValid():
+        raise ValueError('Invalid input values') 
+        
     if savecrs:
         save_crs(crs, description)
     if setproject:
