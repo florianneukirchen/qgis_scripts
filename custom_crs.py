@@ -150,6 +150,37 @@ def crs_pacific(projection='robin', lon=-150, setproject=False, savecrs=False):
         set_project_crs(crs)
     return crs, description  
 
+def crs_lcc(lat_1=33, lat_2=45, lon_0=0, setproject=False, savecrs=False):
+    """
+    Create a custom Lambert conformal conic (LCC)  projection with standard parallels lat_1 and lat_2. 
+    
+    Parameters:
+        lat_1 (float): First standard parallel (degrees)
+        lat_2 (float): Second standard parallel (degrees)
+        lon_0=0 (float): Longitude of map center (degrees)
+        setproject=False: Use the CRS to set the project CRS
+        savecrs=False: Save the custom CRS in the database 
+    Returns:
+        crs (QgsCoordinateReferenceSystem)
+        description (str)
+    """
+    proj4 = f'+proj=lcc +lon_0={lon_0} +lat_1={lat_1} +lat_2={lat_2} +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs'
+    description = f"LCC w. parallels {lat_1}, {lat_2}, centered lon {lon_0}"
+    
+    crs = QgsCoordinateReferenceSystem()
+    crs.createFromProj4(proj4)
+    
+    if not crs.isValid():
+        raise ValueError('Invalid input values') 
+        
+    if savecrs:
+        save_crs(crs, description)
+    if setproject:
+        set_project_crs(crs)
+    return crs, description   
+
+
+
 
 def crs_albers(lat_1, lat_2, lon_0=0, setproject=False, savecrs=False):
     """
