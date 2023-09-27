@@ -245,3 +245,24 @@ def save_crs(crs, description):
 def get_project_crs():
     """Shortcut to get current project CRS. Returns: crs (QgsCoordinateReferenceSystem)"""
     return QgsProject.instance().crs()
+    
+class AreaOfInterest():
+    def __init__(self):
+        layer = iface.activeLayer()
+        if isinstance(layer, QgsVectorLayer) and layer.selectedFeatureCount() > 0:
+            self.box = layer.boundingBoxOfSelected()
+        else:
+            self.box = layer.extent()
+        
+        self.center = self.box.center()
+        self.lon = self.center.x()
+        self.lat = self.center.y()
+        
+        # Define two standard parallels enclosing 2/3 of the AOI
+        
+        self.lat_1 = self.box.yMaximum() - (self.box.height() / 6)
+        self.lat_2 = self.box.yMinimum() + (self.box.height() / 6)
+        
+        
+            
+        
