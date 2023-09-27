@@ -114,13 +114,14 @@ def crs_laea(lat, lon, setproject=False, savecrs=False):
 
 def crs_pacific(projection='robin', lon=-150, setproject=False, savecrs=False):
     """
-    Create a custom Robinson / Mollweide / Miller etc. projection centered on a given lon. 
+    Create a custom Robinson / Mollweide / Miller / Winkel Tripel etc. projection centered on a given lon. 
     
     On-the-fly reprojection of layers can result in artifacts, better to reproject the layers to this crs.
     Parameters:
         projection (str): Projection 
             use proj4 code such as: 
             'robin' (Robinson)
+            'wintri' (Winkel Tripel)
             'mill' (Miller)
             'moll' (Mollweide)
             Using an invalid projection (string) raises a ValueError.
