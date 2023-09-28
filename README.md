@@ -11,7 +11,7 @@ for the region of interest, including:
 - Lambert azimuthal equal-area projection (LAEA)
 - Lambert conformal conic (LCC)
 - Albers equal-area conic projection
-- Robinson / Miller / Mollweide or other projections centered on the Pacific or any custom longitude
+- Robinson / Miller / Mollweide / Winkel Tripel or other projections centered on the Pacific or any custom longitude
 
 ### Create custom CRS with functions
 
