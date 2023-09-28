@@ -4,6 +4,7 @@ for the region of interest, including:
 - Orthographic projection (i.e. view from space) 
 - Satellite view (a.k.a. tilted perspective projection or general perspective)
 - Lambert azimuthal equal-area projection (LAEA)
+- Lambert conformal conic (LCC)
 - Albers equal-area conic projection
 - Robinson / Miller / Mollweide / Winkel Tripel or other projections centered on the Pacific or any custom longitude
 
@@ -15,6 +16,34 @@ crs, desc = crs_sat(-25, -70, h=5500000, azi=-20, tilt=30, setproject=True)
 
 With setproject=True, the CRS of the project is set accordingly. This makes it very easy to adjust the values and to find 
 the best angles. To save the CRS, pass the option savecrs=True while creating the custom crs or call the function save_crs(crs, desc) with an existing one.
+
+The class AreaOfInterest() provides an alternative approach. To define your area 
+of interest, either choose a layer comprising only your area (the layer extend 
+will be used) or select some features of a vector layer (the bounding box of 
+selected features will be used). Now initiate an instance of the class:
+
+aoi = AreaOfInterest()
+
+And create a Lambert azimuthal equal-area projection centered of the center of 
+the area of interest with:
+
+crs = aoi.laea()
+
+This already sets the project CRS to the newly created CRS. To change this 
+behavior, set 
+
+aoi.setproject = False 
+
+It is possible to override certain attributes and to round the values. For an 
+Albers projection with standard parallels rounded to 2 digits and longitude 
+centered on 0°:
+
+aoi.albers(lon_0=0, round_digits=2)
+
+You can save the CRS that was created last as user CRS to be used in other projects:
+
+aoi.save_crs()
+
 """
 
 def crs_orthographic(lat, lon, setproject=False, savecrs=False):
@@ -298,18 +327,18 @@ class AreaOfInterest():
         
     def orthographic(self, lat=None, lon=None, round_digits=None):
         """
-        Create a custom orthographic projection centered on center of 
-        area of interest (with lat, lon = None) or on lat, lon. 
+        Create a custom orthographic projection. 
         
         This projections mimics the view of earth from space from infinite distance.
+        Default: Centered on center of the area of interest. 
+        Parameters can be used to overwrite the default values.
         Parameters:
-            lat (float or None): Latitude (degrees)
-            lon (float or None): Longitude (degrees)
-            round_digits (int or None): optionally round lat, lon values.  
+            lat (float): Latitude (degrees), optional.
+            lon (float): Longitude (degrees), optional.
+            round_digits (int): optionally round lat, lon values.  
 
         Returns:
             crs (QgsCoordinateReferenceSystem)
-            description (str)
         """
         # The default values are taken from the AOI attributes
         # but we allow to override them
@@ -328,6 +357,26 @@ class AreaOfInterest():
         return self.crs
         
     def sat(self, lat=None, lon=None, h=5000000, azi=0, tilt=0, round_digits=None):
+        """
+        Create a custom tilted perspective projection.
+        
+        This projections mimics the view of earth from a satellite in h meters altitude. 
+        Nice for insets showing the area of interest. For best results, only use the upper 
+        part of the resulting "globe" and eventually also rotate the map view.
+        Default: Centered on center of the area of interest. 
+        Parameters can be used to overwrite the default values.
+        Parameters:
+            lat (float): Latitude (degrees), optional.
+            lon (float): Longitude (degrees), optional.
+            h (int): altitude in meters 
+            azi (float): Bearing in degrees away from north
+            tilt (float): Angle in degrees away from nadir
+            round_digits (int): optionally round lat, lon values.  
+
+        Returns:
+            crs (QgsCoordinateReferenceSystem)
+        """
+
         if not lat:
             lat = self.lat
         if not lon:
@@ -343,6 +392,18 @@ class AreaOfInterest():
         return self.crs 
         
     def laea(self, lat=None, lon=None, round_digits=None):
+        """
+        Create a custom Lambert azimuthal equal-area projection. 
+        
+        Default: Centered on center of the area of interest. 
+        Parameters can be used to overwrite the default values.
+        Parameters:
+            lat (float): Latitude of projection center (degrees)
+            lon (float): Longitude of projection center (degrees)
+            round_digits (int): optionally round lat, lon values. 
+        Returns:
+            crs (QgsCoordinateReferenceSystem)
+        """
         if not lat:
             lat = self.lat
         if not lon:
@@ -358,6 +419,20 @@ class AreaOfInterest():
         return self.crs    
     
     def lcc(self, lat_1=None, lat_2=None, lon_0=None, round_digits=None):
+        """
+        Create a custom Lambert conformal conic (LCC)  projection. 
+        
+        Default: Standard parallels enclose 2/3 of the area of interest and 
+        lon_0 is longitude of central point of area of interest. 
+        Parameters can be used to overwrite the default values.
+        Parameters:
+            lat_1 (float): Optional, first standard parallel (degrees)
+            lat_2 (float): Optional, second standard parallel (degrees)
+            lon_0 (float): Longitude of map center (degrees)
+            round_digits (int): optionally round lat, lon values. 
+        Returns:
+            crs (QgsCoordinateReferenceSystem)
+        """
         if not lat_1:
             lat_1 = self.lat_1
         if not lat_2:
@@ -377,6 +452,20 @@ class AreaOfInterest():
     
     
     def albers(self, lat_1=None, lat_2=None, lon_0=None, round_digits=None):
+        """
+        Create a custom Albers equal-area conic projection. 
+        
+        Default: Standard parallels enclose 2/3 of the area of interest and 
+        lon_0 is longitude of central point of area of interest. 
+        Parameters can be used to overwrite the default values.
+        Parameters:
+            lat_1 (float): Optional, first standard parallel (degrees)
+            lat_2 (float): Optional, second standard parallel (degrees)
+            lon_0 (float): Longitude of map center (degrees)
+            round_digits (int): optionally round lat, lon values. 
+        Returns:
+            crs (QgsCoordinateReferenceSystem)
+        """
         if not lat_1:
             lat_1 = self.lat_1
         if not lat_2:
