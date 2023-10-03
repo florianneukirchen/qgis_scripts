@@ -30,16 +30,16 @@ the area of interest with:
 
 crs = aoi.laea()
 
-This already sets the project CRS to the newly created CRS. To change this 
-behavior, set 
-
-aoi.setproject = False 
-
 It is possible to override certain attributes and to round the values. For an 
 Albers projection with standard parallels rounded to 2 digits and longitude 
 centered on 0°:
 
 aoi.albers(lon_0=0, round_digits=2)
+
+The default is to set the project CRS to any newly created CRS. To change this 
+behavior, set 
+
+aoi.setproject = False 
 
 You can save the CRS that was created last as user CRS to be used in other projects:
 
@@ -143,6 +143,13 @@ Functions
     Returns:
         crs (QgsCoordinateReferenceSystem)
         description (str)
+
+    
+`cut_polygons(lon=-150, layer=None)`
+:   Cut polygons for a CRS that is centered on a lon unequal 0
+    
+    lon: Longitude (degrees), same default as in crs_pacific()
+    layer: QgsVectorLayer. Default: Use active layer.
 
     
 `get_project_crs()`

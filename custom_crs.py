@@ -29,16 +29,16 @@ the area of interest with:
 
 crs = aoi.laea()
 
-This already sets the project CRS to the newly created CRS. To change this 
-behavior, set 
-
-aoi.setproject = False 
-
 It is possible to override certain attributes and to round the values. For an 
 Albers projection with standard parallels rounded to 2 digits and longitude 
 centered on 0°:
 
 aoi.albers(lon_0=0, round_digits=2)
+
+The default is to set the project CRS to any newly created CRS. To change this 
+behavior, set 
+
+aoi.setproject = False 
 
 You can save the CRS that was created last as user CRS to be used in other projects:
 
@@ -179,6 +179,58 @@ def crs_pacific(projection='robin', lon=-150, setproject=False, savecrs=False):
     if setproject:
         set_project_crs(crs)
     return crs, description  
+
+def cut_polygons(lon=-150, layer=None):
+    """
+    Cut polygons for a CRS that is centered on a lon unequal 0
+    
+    lon: Longitude (degrees), same default as in crs_pacific()
+    layer: QgsVectorLayer. Default: Use active layer.
+    """
+    if not layer:
+        layer = iface.activeLayer()
+    fixed = processing.run(
+        "native:fixgeometries", 
+        {'INPUT':layer,
+        'METHOD':1,'OUTPUT':'TEMPORARY_OUTPUT'})
+        
+    vl = QgsVectorLayer("Linestring", "temp", "memory")
+    pr = vl.dataProvider()
+    
+    cut_at = lon + 180
+    if cut_at > 180:
+        cut_at = cut_at - 180
+
+    margin = 0.00001
+    
+    wkt = f"LINESTRING(({cut_at} 90, {cut_at} -90)"
+    g = QgsGeometry.fromWkt(wkt)
+    f = QgsFeature()
+    f.setGeometry(g)
+    
+    pr.addFeature(f)
+    QgsProject.instance().addMapLayer(vl)
+    
+    myresult = processing.run("native:buffer", 
+        {'INPUT': vl,
+        'DISTANCE':margin,
+        'SEGMENTS':5,
+        'END_CAP_STYLE':0,
+        'JOIN_STYLE':0,
+        'MITER_LIMIT':2,
+        'DISSOLVE':False,
+        'SEPARATE_DISJOINT':False,
+        'OUTPUT':'TEMPORARY_OUTPUT'})
+        
+    myresult = processing.run("native:difference", 
+        {'INPUT':fixed['OUTPUT'],
+        'OVERLAY':myresult['OUTPUT'],
+        'OUTPUT':'TEMPORARY_OUTPUT','GRID_SIZE':None})
+        
+    myresult['OUTPUT'].setName(f"Polygos cut at {cut_at}")
+        
+    QgsProject.instance().addMapLayer(myresult['OUTPUT'], True)
+   
 
 def crs_lcc(lat_1=33, lat_2=45, lon_0=0, setproject=False, savecrs=False):
     """
