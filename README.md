@@ -2,6 +2,10 @@
 
 A small collection of QGIS scripts to be used in the QGIS python console.
 
+## save_selected_layers_gpkg.py
+
+Save all selected layers to GPKG. Very helpful if you have many memory layers to save. The file path of the geopackage has to be edited in the script.
+
 ## custom_crs.py
 
 The script defines functions that can be used in the QGIS python console to speed up the generation of custom projections 

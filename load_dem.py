@@ -10,7 +10,7 @@ from qgis import processing
 import os
 
 # Set the path to SRTM here:
-dem_folder  = '/media/riannek/Beryll/karten-data/SRTM/tiles'
+dem_folder  = '/media/riannek/minimax/karten-data/SRTM/tiles'
 
 
 # Get the path to the SRTM grid geopackage. 
